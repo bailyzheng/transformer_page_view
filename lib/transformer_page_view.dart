@@ -186,9 +186,9 @@ class TransformerPageController extends PageController {
   static int _getRealIndexFromRenderIndex(
       num index, bool loop, int itemCount, bool reverse) {
     int result = reverse ? (itemCount - index - 1) : index;
-    if (loop) {
-      result += kMiddleValue;
-    }
+//    if (loop) {
+//      result += kMiddleValue;
+//    }
     return result;
   }
 }
