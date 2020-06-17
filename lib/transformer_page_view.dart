@@ -20,6 +20,8 @@ const int kMiddleValue = 1000000000;
 ///  Default auto play transition duration (in millisecond)
 const int kDefaultTransactionDuration = 300;
 
+typedef TransformerPageViewWidgetBuilder = Widget Function(BuildContext context, int index, int realIndex);
+
 class TransformInfo {
   /// The `width` of the `TransformerPageView`
   final double width;
@@ -215,9 +217,7 @@ class TransformerPageView extends StatefulWidget {
   /// Same as [PageView.onPageChanged]
   final ValueChanged<List<int>> onPageChanged;
 
-  final ValueChanged<int> preItemBuilder;
-
-  final IndexedWidgetBuilder itemBuilder;
+  final TransformerPageViewWidgetBuilder itemBuilder;
 
   // See [IndexController.mode],[IndexController.next],[IndexController.previous]
   final IndexController controller;
@@ -267,7 +267,6 @@ class TransformerPageView extends StatefulWidget {
     this.onPageChanged,
     this.controller,
     this.transformer,
-    this.preItemBuilder,
     this.itemBuilder,
     this.pageController,
     @required this.itemCount,
@@ -295,7 +294,7 @@ class TransformerPageView extends StatefulWidget {
     assert(children != null);
     return new TransformerPageView(
       itemCount: children.length,
-      itemBuilder: (BuildContext context, int index) {
+      itemBuilder: (BuildContext context, int index, int realIndex) {
         return children[index];
       },
       pageController: pageController,
@@ -355,8 +354,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   Widget _buildItemNormal(BuildContext context, int index) {
     int renderIndex = _pageController.getRenderIndexFromRealIndex(index);
-    widget.preItemBuilder(index);
-    Widget child = widget.itemBuilder(context, renderIndex);
+    Widget child = widget.itemBuilder(context, renderIndex, index);
     return child;
   }
 
@@ -367,8 +365,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
           int renderIndex = _pageController.getRenderIndexFromRealIndex(index);
           Widget child;
           if (widget.itemBuilder != null) {
-            widget.preItemBuilder(index);
-            child = widget.itemBuilder(context, renderIndex);
+            child = widget.itemBuilder(context, renderIndex, index);
           }
           if (child == null) {
             child = new Container();
