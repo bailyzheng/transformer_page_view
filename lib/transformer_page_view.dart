@@ -213,7 +213,9 @@ class TransformerPageView extends StatefulWidget {
 
   /// Called whenever the page in the center of the viewport changes.
   /// Same as [PageView.onPageChanged]
-  final ValueChanged<int> onPageChanged;
+  final ValueChanged<List<int>> onPageChanged;
+
+  final ValueChanged<int> preItemBuilder;
 
   final IndexedWidgetBuilder itemBuilder;
 
@@ -265,6 +267,7 @@ class TransformerPageView extends StatefulWidget {
     this.onPageChanged,
     this.controller,
     this.transformer,
+    this.preItemBuilder,
     this.itemBuilder,
     this.pageController,
     @required this.itemCount,
@@ -284,7 +287,7 @@ class TransformerPageView extends StatefulWidget {
       Axis scrollDirection = Axis.horizontal,
       ScrollPhysics physics,
       bool pageSnapping = true,
-      ValueChanged<int> onPageChanged,
+      ValueChanged<List<int>> onPageChanged,
       IndexController controller,
       PageTransformer transformer,
       @required List<Widget> children,
@@ -352,6 +355,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   Widget _buildItemNormal(BuildContext context, int index) {
     int renderIndex = _pageController.getRenderIndexFromRealIndex(index);
+    widget.preItemBuilder(index);
     Widget child = widget.itemBuilder(context, renderIndex);
     return child;
   }
@@ -363,6 +367,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
           int renderIndex = _pageController.getRenderIndexFromRealIndex(index);
           Widget child;
           if (widget.itemBuilder != null) {
+            widget.preItemBuilder(index);
             child = widget.itemBuilder(context, renderIndex);
           }
           if (child == null) {
@@ -446,7 +451,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
   void _onIndexChanged(int index) {
     _activeIndex = index;
     if (widget.onPageChanged != null) {
-      widget.onPageChanged(_pageController.getRenderIndexFromRealIndex(index));
+      widget.onPageChanged([_pageController.getRenderIndexFromRealIndex(index), index]);
     }
   }
 

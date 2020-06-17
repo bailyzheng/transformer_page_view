@@ -10,7 +10,7 @@ class IndexController extends ChangeNotifier {
 
   Completer _completer;
 
-  int index;
+  int index = 0;
   bool animation;
   int event;
 
