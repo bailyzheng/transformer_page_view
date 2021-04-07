@@ -8,7 +8,7 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MaterialApp(
         home: new TransformerPageView(
-            itemBuilder: (context, index) {
+            itemBuilder: (context, index, rindex) {
               return Text("0");
             },
             itemCount: 10)));
@@ -131,7 +131,7 @@ void main() {
         home: new TransformerPageView(
             controller: controller,
             transformer: new FackTransformer(),
-            itemBuilder: (context, index) {
+            itemBuilder: (context, index, rindex) {
               print("===================build:$index");
               return Text("$index");
             },

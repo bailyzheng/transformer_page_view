@@ -10,7 +10,7 @@ class Zero extends StatelessWidget {
         ),
         body: new TransformerPageView(
           itemCount: 0,
-          itemBuilder: (c, i) {
+          itemBuilder: (c, i, j) {
             return new Text("$i");
           },
         ));

@@ -1,14 +1,15 @@
-import 'package:example/buildin_transformers.dart';
-import 'package:example/images.dart';
-import 'package:example/screens/ProductListView.dart';
-import 'package:example/welcome.dart';
-import 'package:example/zero.dart';
 import 'package:flutter/material.dart';
 
 import 'package:transformer_page_view/transformer_page_view.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'dart:math' as Math;
+
+import 'buildin_transformers.dart';
+import 'images.dart';
+import 'screens/ProductListView.dart';
+import 'welcome.dart';
+import 'zero.dart';
 // 1111111 !!!!!!
 
 void main() => runApp(new MyApp());
@@ -35,16 +36,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  IndexController _controller;
+  IndexController? _controller;
   List<String> _types = [
     "AccordionTransformer",
     "ThreeDTransformer",
@@ -54,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
     "DeepthPageTransformer"
   ];
 
-  String _type;
-  FixedExtentScrollController controller;
+  String? _type;
+  FixedExtentScrollController? controller;
   int _index = 0;
   double _viewportFraction = 1.0;
 
@@ -90,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: new Text(widget.title!),
         actions: <Widget>[
           new InkWell(
             child: new Text("route"),
@@ -108,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               new RaisedButton(
                 onPressed: () {
-                  _controller.move(new Math.Random().nextInt(5));
+                  _controller!.move(new Math.Random().nextInt(5));
                 },
                 color: Colors.blue,
                 child: new Text("Random"),
@@ -158,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               new RaisedButton(
                 onPressed: () {
-                  _controller.previous();
+                  _controller!.previous();
                 },
                 color: Colors.blue,
                 child: new Text("Preious"),
@@ -168,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               new RaisedButton(
                 onPressed: () {
-                  _controller.next();
+                  _controller!.next();
                 },
                 color: Colors.blue,
                 child: new Text("Next"),
@@ -212,12 +213,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 viewportFraction: _viewportFraction,
                 controller: _controller,
                 transformer: getTransformer(),
-                onPageChanged: (int index) {
+                onPageChanged: (List<int> indexList) {
                   setState(() {
-                    _index = index;
+                    _index = indexList[0];
                   });
                 },
-                itemBuilder: (BuildContext context, int index) {
+                itemBuilder: (BuildContext context, int index, int rindex) {
                   return new Image.asset(
                     images[index],
                     fit: BoxFit.fill,

@@ -1,4 +1,3 @@
-import 'package:example/buildin_transformers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:transformer_page_view/transformer_page_view.dart';

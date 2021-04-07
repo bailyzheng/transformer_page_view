@@ -1,9 +1,10 @@
-import 'package:example/buildin_transformers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:transformer_page_view/transformer_page_view.dart';
 
 import 'package:flutter/cupertino.dart';
+
+import 'buildin_transformers.dart';
 
 // 1111111 !!!!!!
 
@@ -31,9 +32,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => new _MyHomePageState();
@@ -50,7 +51,7 @@ class TestWidget extends StatelessWidget {
     return new TransformerPageView(
         loop: true,
         transformer: new ZoomInPageTransformer(),
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (BuildContext context, int index, int rindex) {
           return new Container(
             color: list[index % list.length],
             child: new Center(

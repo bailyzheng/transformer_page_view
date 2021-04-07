@@ -1,7 +1,8 @@
-import 'package:example/screens/ProductDetailView.dart';
 import 'package:flutter/material.dart';
 
 import 'package:transformer_page_view/transformer_page_view.dart';
+
+import 'ProductDetailView.dart';
 
 class ProductListView extends StatefulWidget {
   @override
@@ -32,7 +33,7 @@ class ProductListViewState extends State<ProductListView> {
               transformer: new PageTransformerBuilder(builder: (w, i) {
                 return w;
               }),
-              itemBuilder: (c, i) {
+              itemBuilder: (c, i, j) {
                 return new InkWell(
                   onTap: () {
                     Navigator.push(context, new MaterialPageRoute(builder: (c) {
