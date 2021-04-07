@@ -20,7 +20,7 @@ const int kMiddleValue = 1000000000;
 ///  Default auto play transition duration (in millisecond)
 const int kDefaultTransactionDuration = 300;
 
-typedef TransformerPageViewWidgetBuilder = Widget Function(BuildContext context, int? index, int realIndex);
+typedef TransformerPageViewWidgetBuilder = Widget Function(BuildContext context, int index, int realIndex);
 
 class TransformInfo {
   /// The `width` of the `TransformerPageView`
@@ -116,7 +116,7 @@ class TransformerPageController extends PageController {
             keepPage: keepPage,
             viewportFraction: viewportFraction);
 
-  int? getRenderIndexFromRealIndex(num? index) {
+  int getRenderIndexFromRealIndex(num index) {
     return _getRenderIndexFromRealIndex(index, loop, itemCount, reverse);
   }
 
@@ -215,7 +215,7 @@ class TransformerPageView extends StatefulWidget {
 
   /// Called whenever the page in the center of the viewport changes.
   /// Same as [PageView.onPageChanged]
-  final ValueChanged<List<int?>>? onPageChanged;
+  final ValueChanged<List<int>>? onPageChanged;
 
   final TransformerPageViewWidgetBuilder? itemBuilder;
 
@@ -341,7 +341,7 @@ class TransformerPageView extends StatefulWidget {
 
 class _TransformerPageViewState extends State<TransformerPageView> {
   Size? _size;
-  int? _activeIndex;
+  int _activeIndex = 0;
   double? _currentPixels;
   bool _done = false;
 
@@ -353,7 +353,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
   TransformerPageController? _pageController;
 
   Widget _buildItemNormal(BuildContext context, int index) {
-    int? renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
+    int renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
     Widget child = widget.itemBuilder!(context, renderIndex, index);
     return child;
   }
@@ -402,7 +402,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
   }
 
   double? _calcCurrentPixels() {
-    _currentPixels = _pageController!.getRenderIndexFromRealIndex(_activeIndex)! *
+    _currentPixels = _pageController!.getRenderIndexFromRealIndex(_activeIndex) *
         _pageController!.position.viewportDimension *
         widget.viewportFraction;
 
@@ -557,7 +557,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
   }
 
   int _calcNextIndex(bool next) {
-    int currentIndex = _activeIndex!;
+    int currentIndex = _activeIndex;
     if (_pageController!.reverse) {
       if (next) {
         currentIndex--;
