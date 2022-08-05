@@ -93,27 +93,31 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           new Row(
             children: <Widget>[
-              new RaisedButton(
+              new ElevatedButton(
                 onPressed: () {
                   _controller!.previous();
                 },
-                color: Colors.blue,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                ),
                 child: new Text("Preious"),
               ),
               new SizedBox(
                 width: 8.0,
               ),
-              new RaisedButton(
+              new ElevatedButton(
                 onPressed: () {
                   _controller!.next();
                 },
-                color: Colors.blue,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                ),
                 child: new Text("Next"),
               ),
               new SizedBox(
                 width: 8.0,
               ),
-              new RaisedButton(
+              new ElevatedButton(
                 onPressed: () {
                   showModalBottomSheet(
                       context: context,
@@ -136,7 +140,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: _types.map((t) => new Text(t)).toList());
                       });
                 },
-                color: Colors.blue,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                ),
                 child: new Text("Change Animation"),
               ),
             ],
