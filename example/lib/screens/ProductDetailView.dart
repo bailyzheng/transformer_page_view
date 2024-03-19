@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:transformer_page_view/transformer_page_view.dart';
 
 class ProductDetailView extends StatelessWidget {
   @override
