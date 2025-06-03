@@ -84,13 +84,13 @@ abstract class PageTransformer {
   Widget transform(Widget child, TransformInfo info);
 }
 
-typedef Widget PageTransformerBuilderCallback(Widget child, TransformInfo info);
+typedef PageTransformerBuilderCallback = Widget Function(
+    Widget child, TransformInfo info);
 
 class PageTransformerBuilder extends PageTransformer {
   final PageTransformerBuilderCallback builder;
 
-  PageTransformerBuilder({bool reverse = false, required this.builder})
-      : super(reverse: reverse);
+  PageTransformerBuilder({super.reverse, required this.builder});
 
   @override
   Widget transform(Widget child, TransformInfo info) {
@@ -105,16 +105,14 @@ class TransformerPageController extends PageController {
 
   TransformerPageController({
     int? initialPage = 0,
-    bool keepPage = true,
-    double viewportFraction = 1.0,
+    super.keepPage,
+    super.viewportFraction,
     this.loop = false,
     this.itemCount,
     this.reverse = false,
   }) : super(
             initialPage: TransformerPageController._getRealIndexFromRenderIndex(
-                initialPage ?? 0, loop, itemCount, reverse),
-            keepPage: keepPage,
-            viewportFraction: viewportFraction);
+                initialPage ?? 0, loop, itemCount, reverse));
 
   int getRenderIndexFromRealIndex(num index) {
     return _getRenderIndexFromRealIndex(index, loop, itemCount, reverse);
@@ -255,7 +253,7 @@ class TransformerPageView extends StatefulWidget {
   /// [itemBuilder] will be called only with indices greater than or equal to
   /// zero and less than [itemCount].
   TransformerPageView({
-    Key? key,
+    super.key,
     this.index,
     Duration? duration,
     this.curve = Curves.ease,
@@ -271,9 +269,8 @@ class TransformerPageView extends StatefulWidget {
     this.pageController,
     required this.itemCount,
   })  : assert(itemCount == 0 || itemBuilder != null || transformer != null),
-        this.duration =
-            duration ?? new Duration(milliseconds: kDefaultTransactionDuration),
-        super(key: key);
+        duration =
+            duration ?? Duration(milliseconds: kDefaultTransactionDuration);
 
   factory TransformerPageView.children(
       {Key? key,
@@ -312,7 +309,7 @@ class TransformerPageView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new _TransformerPageViewState();
+    return _TransformerPageViewState();
   }
 
   static int? getRealIndexFromRenderIndex(
@@ -330,7 +327,7 @@ class TransformerPageView extends StatefulWidget {
       int? itemCount,
       required bool loop,
       required double viewportFraction}) {
-    return new PageController(
+    return PageController(
         initialPage: getRealIndexFromRenderIndex(
             reverse: reverse, index: index, itemCount: itemCount, loop: loop)!,
         viewportFraction: viewportFraction);
@@ -352,27 +349,16 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   Widget _buildItemNormal(BuildContext context, int index) {
     int renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
-    Widget child = widget.itemBuilder!(context, renderIndex, index);
-    return child;
+    return widget.itemBuilder!(context, renderIndex, index);
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    return new AnimatedBuilder(
+    int renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
+    var curChild = widget.itemBuilder!(context, renderIndex, index);
+    return AnimatedBuilder(
         animation: _pageController!,
-        builder: (BuildContext c, Widget? w) {
-          int? renderIndex =
-              _pageController!.getRenderIndexFromRealIndex(index);
-          Widget? child;
-          if (widget.itemBuilder != null) {
-            child = widget.itemBuilder!(context, renderIndex, index);
-          }
-          if (child == null) {
-            child = Container();
-          }
-          if (_size == null) {
-            return child;
-          }
-
+        child: curChild,
+        builder: (BuildContext c, child) {
           double position;
 
           double? page = _pageController!.realPage;
@@ -384,7 +370,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
           }
           position *= widget.viewportFraction;
 
-          TransformInfo info = new TransformInfo(
+          TransformInfo info = TransformInfo(
               index: renderIndex,
               width: _size!.width,
               height: _size!.height,
@@ -396,7 +382,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
               done: _done,
               scrollDirection: widget.scrollDirection,
               viewportFraction: widget.viewportFraction);
-          return _transformer!.transform(child, info);
+          return _transformer!.transform(child ?? const SizedBox(), info);
         });
   }
 
@@ -415,7 +401,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
   Widget build(BuildContext context) {
     IndexedWidgetBuilder builder =
         _transformer == null ? _buildItemNormal : _buildItem;
-    Widget child = new PageView.builder(
+    Widget child = PageView.builder(
       itemBuilder: builder,
       itemCount: _pageController!.getRealItemCount(),
       onPageChanged: _onIndexChanged,
@@ -428,7 +414,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
     if (_transformer == null) {
       return child;
     }
-    return new NotificationListener(
+    return NotificationListener(
         onNotification: (ScrollNotification notification) {
           if (notification is ScrollStartNotification) {
             _calcCurrentPixels();
@@ -483,14 +469,12 @@ class _TransformerPageViewState extends State<TransformerPageView> {
     _transformer = widget.transformer;
     //  int index = widget.index ?? 0;
     _pageController = widget.pageController;
-    if (_pageController == null) {
-      _pageController = new TransformerPageController(
-          initialPage: widget.index,
-          itemCount: widget.itemCount,
-          loop: widget.loop,
-          reverse:
-              widget.transformer == null ? false : widget.transformer!.reverse);
-    }
+    _pageController ??= TransformerPageController(
+        initialPage: widget.index,
+        itemCount: widget.itemCount,
+        loop: widget.loop,
+        reverse:
+            widget.transformer == null ? false : widget.transformer!.reverse);
     // int initPage = _getRealIndexFromRenderIndex(index);
     // _pageController = new PageController(initialPage: initPage,viewportFraction: widget.viewportFraction);
     _fromIndex = _activeIndex = _pageController!.initialPage;
@@ -512,7 +496,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
         _pageController = widget.pageController;
       } else {
         created = true;
-        _pageController = new TransformerPageController(
+        _pageController = TransformerPageController(
             initialPage: widget.index,
             itemCount: widget.itemCount,
             loop: widget.loop,
@@ -530,8 +514,9 @@ class _TransformerPageViewState extends State<TransformerPageView> {
             duration: widget.duration, curve: widget.curve);
       }
     }
-    if (_transformer != null)
+    if (_transformer != null) {
       WidgetsBinding.instance.addPostFrameCallback(_onGetSize);
+    }
 
     if (_controller != getNotifier()) {
       if (_controller != null) {
@@ -547,8 +532,9 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   @override
   void didChangeDependencies() {
-    if (_transformer != null)
+    if (_transformer != null) {
       WidgetsBinding.instance.addPostFrameCallback(_onGetSize);
+    }
     super.didChangeDependencies();
   }
 
@@ -615,6 +601,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   ChangeNotifier? _controller;
 
+  @override
   void dispose() {
     super.dispose();
     if (_controller != null) {
