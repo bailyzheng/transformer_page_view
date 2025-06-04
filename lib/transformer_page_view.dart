@@ -367,7 +367,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
           double? page = _pageController?.realPage;
 
           if (page == null || _size == null) {
-            return child ?? curChild;
+            return const SizedBox();
           }
 
           if (_transformer!.reverse) {
