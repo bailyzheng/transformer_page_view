@@ -144,14 +144,15 @@ class TransformerPageController extends PageController {
   }
 
   double? get realPage {
-    double? page;
-    if (position.maxScrollExtent == null || position.minScrollExtent == null) {
-      page = 0.0;
-    } else {
-      page = super.page;
-    }
+    return super.page;
+    // double? page;
+    // if (position.maxScrollExtent == null || position.minScrollExtent == null) {
+    //   page = 0.0;
+    // } else {
+    //   page = super.page;
+    // }
 
-    return page;
+    // return page;
   }
 
   static _getRenderPageFromRealPage(
@@ -349,24 +350,30 @@ class _TransformerPageViewState extends State<TransformerPageView> {
 
   Widget _buildItemNormal(BuildContext context, int index) {
     int renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
-    return widget.itemBuilder!(context, renderIndex, index);
+    return widget.itemBuilder?.call(context, renderIndex, index) ??
+        const SizedBox();
   }
 
   Widget _buildItem(BuildContext context, int index) {
     int renderIndex = _pageController!.getRenderIndexFromRealIndex(index);
-    var curChild = widget.itemBuilder!(context, renderIndex, index);
+    var curChild = widget.itemBuilder?.call(context, renderIndex, index) ??
+        const SizedBox();
     return AnimatedBuilder(
         animation: _pageController!,
         child: curChild,
         builder: (BuildContext c, child) {
           double position;
 
-          double? page = _pageController!.realPage;
+          double? page = _pageController?.realPage;
+
+          if (page == null || _size == null) {
+            return child ?? curChild;
+          }
 
           if (_transformer!.reverse) {
-            position = page! - index;
+            position = page - index;
           } else {
-            position = index - page!;
+            position = index - page;
           }
           position *= widget.viewportFraction;
 
