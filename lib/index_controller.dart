@@ -10,6 +10,8 @@ class IndexController extends ChangeNotifier {
 
   late Completer _completer;
 
+  IndexController(this.index);
+
   int index = 0;
   late bool animation;
   int? event;
