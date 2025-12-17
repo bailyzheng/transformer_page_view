@@ -14,8 +14,8 @@ export 'package:transformer_page_view/parallax.dart';
 ///
 ///
 
-const int kMaxValue = 2000000000;
-const int kMiddleValue = 1000000000;
+const int kMaxValue = 2000000000000;
+const int kMiddleValue = 1000000000000;
 
 ///  Default auto play transition duration (in millisecond)
 const int kDefaultTransactionDuration = 300;
