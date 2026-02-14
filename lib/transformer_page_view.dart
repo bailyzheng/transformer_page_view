@@ -238,6 +238,8 @@ class TransformerPageView extends StatefulWidget {
   /// This value is only valid when `pageController` is not set,
   final double viewportFraction;
 
+  final bool allowImplicitScrolling;
+
   /// If not set, it is controlled by this widget.
   final int? index;
 
@@ -259,6 +261,7 @@ class TransformerPageView extends StatefulWidget {
     Duration? duration,
     this.curve = Curves.ease,
     this.viewportFraction = 1.0,
+    this.allowImplicitScrolling = false,
     this.loop = false,
     this.scrollDirection = Axis.horizontal,
     this.physics,
@@ -416,6 +419,7 @@ class _TransformerPageViewState extends State<TransformerPageView> {
       scrollDirection: widget.scrollDirection,
       physics: widget.physics,
       pageSnapping: widget.pageSnapping,
+      allowImplicitScrolling: widget.allowImplicitScrolling,
       reverse: _pageController!.reverse,
     );
     if (_transformer == null) {
