@@ -120,7 +120,10 @@ class TransformerPageController extends PageController {
 
   int? getRealItemCount() {
     if (itemCount == 0) return 0;
-    return loop ? itemCount! + kMaxValue : itemCount;
+    // PageView supports an unbounded builder when itemCount is null. A huge
+    // finite count loses precision in scroll-extent estimation at fractional
+    // viewport sizes and can fail Flutter's fixed-extent layout assertion.
+    return loop ? null : itemCount;
   }
 
   static _getRenderIndexFromRealIndex(
