@@ -1,49 +1,63 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 class IndexController extends ChangeNotifier {
   static const int NEXT = 1;
   static const int PREVIOUS = -1;
   static const int MOVE = 0;
 
-  late Completer _completer;
+  IndexController([this.index = 0]);
 
-  IndexController(this.index);
-
-  int index = 0;
-  late bool animation;
+  int index;
+  bool animation = true;
   int? event;
+  Completer<void>? _pending;
 
-  Future move(int index, {bool animation = true}) {
-    this.animation = animation;
+  /// Completes when the move finishes or a newer command replaces it.
+  Future<void> move(int index, {bool animation = true}) {
     this.index = index;
-    this.event = MOVE;
-    _completer = new Completer();
-    notifyListeners();
-    return _completer.future;
+    return _dispatch(MOVE, animation);
   }
 
-  Future next({bool animation = true}) {
-    this.event = NEXT;
+  /// Completes when the move finishes or a newer command replaces it.
+  Future<void> next({bool animation = true}) => _dispatch(NEXT, animation);
+
+  /// Completes when the move finishes or a newer command replaces it.
+  Future<void> previous({bool animation = true}) =>
+      _dispatch(PREVIOUS, animation);
+
+  Future<void> _dispatch(int event, bool animation) {
+    complete();
+    this.event = event;
     this.animation = animation;
-    _completer = new Completer();
-    notifyListeners();
-    return _completer.future;
+    final command = Completer<void>();
+    _pending = command;
+    if (hasListeners) {
+      notifyListeners();
+    } else {
+      complete();
+    }
+    return command.future;
   }
 
-  Future previous({bool animation = true}) {
-    this.event = PREVIOUS;
-    this.animation = animation;
-    _completer = new Completer();
-    notifyListeners();
-    return _completer.future;
+  /// Captures the current command so an older animation cannot finish a new one.
+  VoidCallback completionForCurrentCommand() {
+    final command = _pending;
+    return () {
+      if (identical(_pending, command)) complete();
+    };
   }
 
   void complete() {
-    if (!_completer.isCompleted) {
-      _completer.complete();
-    }
+    final command = _pending;
+    _pending = null;
+    command?.complete();
+  }
+
+  @override
+  void dispose() {
+    complete();
+    super.dispose();
   }
 }
